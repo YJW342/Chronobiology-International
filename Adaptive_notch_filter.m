@@ -15,19 +15,22 @@ t = Data(:,1)-Data(1,1); % Time vector
 T = Data(2,1)-Data(1,1); % Time step
 Fs = 1/T;                % Sampling frequency
 L = size(Data,1);        % Length of signal
-X=Data(:,end);Y = fft(X);P2 = abs(Y/L);P = P2(1:L/2+1);P(2:end-1) = 2*P(2:end-1);
+X=Data(:,end);Y = fft(X);P2 = abs(Y/L);P = P2(1:L/2+1);P(2:end-1) = 2*P(2:end-1); % fft analysis
 f = Fs*(0:(L/2))/L;
 x_initial = [0 0 0 2*pi/24]; % initial guess of ANF state
 zeta=0.1251; % ANF damping factor
 gamma_omg=3.8019*10^(-9); % adaptation rate of frequency
 gamma_d=0.0339; % adaptation rate of constant bias
 sim('ANF_1st.mdl');
+% compare ANF output with raw data in the upper panel
 subplot(3,1,1)
 plot(Data(:,1),Data(:,2))
 hold on
 plot(y_ANF(:,1),y_ANF(:,2),'linewidth',4)
+% compare the first ANF state (1st harmonic term) in the middle panel
 subplot(3,1,2)
 plot(x(:,1),x(:,2),'linewidth',4)
+% compare the circadian phase in the lower panel
 subplot(3,1,3)
 plot(Data(:,1),mod(2*pi*Data(:,1)/24+pi/2,2*pi),'linewidth',4)
 hold on
