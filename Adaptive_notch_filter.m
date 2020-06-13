@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Adaptive notch filter algorithm
+% Adaptive notch filter algorithm in our Chronobiology International paper
 % 1st-order ANF
 clear all
 close all
@@ -10,7 +10,7 @@ Data=[0:1/60:400]';
 for i=1:size(Data,1)
     Data(i,2)=1000+500*sin(2*pi*Data(i,1)/24+pi/2)+300*sin(4*pi*Data(i,1)/24+pi)+200*sin(6*pi*Data(i,1)/24+pi/2)+100*sin(8*pi*Data(i,1)/24+3*pi/2)+50*sin(10*pi*Data(i,1)/24)+200*randn;
 end
-% load('data_fine.mat'); % load .mat data file, the first column is time series and the second column is actigrahy data
+% load('data.mat'); % load .mat data file, the first column is time series and the second column is actigrahy data
 t = Data(:,1)-Data(1,1); % Time vector
 T = Data(2,1)-Data(1,1); % Time step
 Fs = 1/T;                % Sampling frequency
