@@ -19,25 +19,25 @@ Zeta=10.^(N(:,1)*(N_zeta_max-N_zeta_min)+N_zeta_min);
 Gamma_omg=10.^(N(:,2)*(N_omg_max-N_omg_min)+N_omg_min);
 Gamma_d=10.^(N(:,3)*(N_d_max-N_d_min)+N_d_min);
 % load raw data file if you have one, name it as Data in Matlab, the first column is the time sequence and the second column is data value
-% filename=strcat('A3.mat');
-% load(filename);
+filename=strcat('A3.mat');
+load(filename);
 % sample waveform
-Data=[0:1/60:400]';
-for i=1:size(Data,1)
-    Data(i,2)=1000+500*sin(2*pi*Data(i,1)/24+pi/2)+300*sin(4*pi*Data(i,1)/24+pi)+200*sin(6*pi*Data(i,1)/24+pi/2)+100*sin(8*pi*Data(i,1)/24+3*pi/2)+50*sin(10*pi*Data(i,1)/24)+200*randn;
-end
+% Data=[0:1/60:400]';
+% for i=1:size(Data,1)
+%     Data(i,2)=1000+500*sin(2*pi*Data(i,1)/24+pi/2)+300*sin(4*pi*Data(i,1)/24+pi)+200*sin(6*pi*Data(i,1)/24+pi/2)+100*sin(8*pi*Data(i,1)/24+3*pi/2)+50*sin(10*pi*Data(i,1)/24)+200*randn;
+% end
 T=Data(2,1)-Data(1,1);   % Sampling period
 Fs = 1/T;                % Sampling frequency
 L = size(Data,1);        % Length of signal
 t = Data(:,1)-Data(1,1); % Time vector
 X=Data(:,end);Y = fft(X);P2 = abs(Y/L);P = P2(1:round(L/2)+1);P(2:end-1) = 2*P(2:end-1); % run fft
 f = Fs*(0:(L/2))/L;
-x_initial = [0 0 0 0 0 0 0 2*pi/24]; % define the initial guesses of ANF states
+x_initial = [0 0 0 2*pi/24]; % define the initial guesses of ANF states
 % calculate the cost values of the first generation
 for i=1:size(Zeta,1)
     zeta=Zeta(i);gamma_omg=Gamma_omg(i);gamma_d=Gamma_d(i);
-    sim('ANF_3rd.mdl');
-    Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:round(L/2)+1);P1(2:end-1) = 2*P1(2:end-1);
+    sim('ANF_1st.mdl');
+    Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:L/2+1);P1(2:end-1) = 2*P1(2:end-1);
     [M1,N1]=min(abs(f-1/24));[M2,N2]=min(abs(f-0.0289));NN=N1-N2;
     J_harm=trapz((P1(1:NN)-P(1:NN)).^2)+trapz((P1(N1-NN:N1+NN)-P(N1-NN:N1+NN)).^2);
     J_noise=trapz(P1(NN+1:N1-NN-1).^2)+trapz(P1(N1+NN+1:end).^2);
@@ -63,8 +63,8 @@ for i=1:max_iterations
         Gamma_omg=[Gamma_omg;Feature_Children(2)];
         Gamma_d=[Gamma_d;Feature_Children(3)];
         zeta=Zeta(end);gamma_omg=Gamma_omg(end);gamma_d=Gamma_d(end);
-        sim('ANF_3rd.mdl');
-        Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:round(L/2)+1);P1(2:end-1) = 2*P1(2:end-1);
+        sim('ANF_1st.mdl');
+        Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:L/2+1);P1(2:end-1) = 2*P1(2:end-1);
         J_harm=trapz((P1(1:NN)-P(1:NN)).^2)+trapz((P1(N1-NN:N1+NN)-P(N1-NN:N1+NN)).^2);
         J_noise=trapz(P1(NN+1:N1-NN-1).^2)+trapz(P1(N1+NN+1:end).^2);
         Cost=[Cost,J_harm+J_noise];
@@ -80,5 +80,5 @@ end
 zeta=mean(Zeta)
 gamma_omg=mean(Gamma_omg)
 gamma_d=mean(Gamma_d)
-    
+plot(Zeta)    
  
