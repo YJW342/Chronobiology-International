@@ -85,5 +85,5 @@ end
 zeta=mean(Zeta)
 gamma_omg=mean(Gamma_omg)
 gamma_d=mean(Gamma_d)
-plot(Zeta)    
+%plot(Zeta)    
  
