@@ -21,6 +21,7 @@ Gamma_d=10.^(N(:,3)*(N_d_max-N_d_min)+N_d_min);
 % load raw data file if you have one, name it as Data in Matlab, the first column is the time sequence and the second column is data value
 filename=strcat('A3.mat');
 load(filename);
+Data=Data(:,[1,end]);
 % sample waveform
 % Data=[0:1/60:400]';
 % for i=1:size(Data,1)
