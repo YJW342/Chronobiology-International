@@ -34,10 +34,14 @@ t = Data(:,1)-Data(1,1); % Time vector
 X=Data(:,end);Y = fft(X);P2 = abs(Y/L);P = P2(1:round(L/2)+1);P(2:end-1) = 2*P(2:end-1); % run fft
 f = Fs*(0:(L/2))/L;
 x_initial = [0 0 0 2*pi/24]; % define the initial guesses of ANF states
+% x_initial = [0 0 0 0 0 2*pi/24]; % for ANF_2nd.mdl
+% x_initial = [0 0 0 0 0 0 0 2*pi/24]; % for ANF_3rd.mdl
+% x_initial = [0 0 0 0 0 0 0 0 0 2*pi/24]; % for ANF_4th.mdl
+% x_initial = [0 0 0 0 0 0 0 0 0 0 0 2*pi/24]; % for ANF_5th.mdl
 % calculate the cost values of the first generation
 for i=1:size(Zeta,1)
     zeta=Zeta(i);gamma_omg=Gamma_omg(i);gamma_d=Gamma_d(i);
-    sim('ANF_1st.mdl');
+    sim('ANF_1st.mdl'); % or ANF_2nd.mdl,ANF_3rd.mdl,ANF_4th.mdl,ANF_5th.mdl
     Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:L/2+1);P1(2:end-1) = 2*P1(2:end-1);
     [M1,N1]=min(abs(f-1/24));[M2,N2]=min(abs(f-0.0289));NN=N1-N2;
     J_harm=trapz((P1(1:NN)-P(1:NN)).^2)+trapz((P1(N1-NN:N1+NN)-P(N1-NN:N1+NN)).^2);
@@ -64,7 +68,7 @@ for i=1:max_iterations
         Gamma_omg=[Gamma_omg;Feature_Children(2)];
         Gamma_d=[Gamma_d;Feature_Children(3)];
         zeta=Zeta(end);gamma_omg=Gamma_omg(end);gamma_d=Gamma_d(end);
-        sim('ANF_1st.mdl');
+        sim('ANF_1st.mdl'); % or ANF_2nd.mdl,ANF_3rd.mdl,ANF_4th.mdl,ANF_5th.mdl
         Y=fft(y_ANF(:,2));P2 = abs(Y/L);P1 = P2(1:L/2+1);P1(2:end-1) = 2*P1(2:end-1);
         J_harm=trapz((P1(1:NN)-P(1:NN)).^2)+trapz((P1(N1-NN:N1+NN)-P(N1-NN:N1+NN)).^2);
         J_noise=trapz(P1(NN+1:N1-NN-1).^2)+trapz(P1(N1+NN+1:end).^2);
